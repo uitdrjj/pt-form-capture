@@ -546,34 +546,114 @@ function clearForm(){
   document.getElementById('copyStatus').textContent = '';
 }
 
+// function playQuack(){
+//   try{
+//     const ctx = new (window.AudioContext || window.webkitAudioContext)();
+//     const now = ctx.currentTime;
+
+//     const osc = ctx.createOscillator();
+//     const gain = ctx.createGain();
+//     const filter = ctx.createBiquadFilter();
+
+//     osc.type = 'sawtooth';
+//     filter.type = 'lowpass';
+//     filter.frequency.setValueAtTime(1200, now);
+
+//     // Quick downward pitch sweep is what makes it read as a "quack"
+//     osc.frequency.setValueAtTime(620, now);
+//     osc.frequency.exponentialRampToValueAtTime(180, now + 0.14);
+
+//     gain.gain.setValueAtTime(0.0001, now);
+//     gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+//     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+//     osc.connect(filter);
+//     filter.connect(gain);
+//     gain.connect(ctx.destination);
+
+//     osc.start(now);
+//     osc.stop(now + 0.18);
+//     osc.onended = () => ctx.close();
+//   }catch(e){
+//     // If the browser blocks audio (e.g. no user interaction yet), fail silently
+//   }
+// }
+
 function playQuack(){
   try{
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // A real quack is a short, buzzy honk: a fast amplitude "flutter" (like a
+    // duck's vocal folds), a nasal formant filter, and a pitch that drops
+    // sharply at the start then wobbles as it fades. We build one "syllable"
+    // and call it twice, back to back, like a real "quack-quack".
+    function honk(startAt, duration, peakGain){
+      const osc = ctx.createOscillator();
+      const sub = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      const ampLfo = ctx.createOscillator();
+      const ampLfoGain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      const filter2 = ctx.createBiquadFilter();
+      const masterGain = ctx.createGain();
+
+      // Core buzzy tone - sawtooth gives the harmonic richness a quack needs
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(310, startAt);
+      osc.frequency.exponentialRampToValueAtTime(150, startAt + duration * 0.5);
+      osc.frequency.exponentialRampToValueAtTime(190, startAt + duration);
+
+      // A lower layer thickens it so it doesn't sound like a kazoo
+      sub.type = 'square';
+      sub.frequency.setValueAtTime(150, startAt);
+      sub.frequency.exponentialRampToValueAtTime(75, startAt + duration * 0.5);
+      sub.frequency.exponentialRampToValueAtTime(95, startAt + duration);
+
+      // Nasal, honky formant - two stacked band-ish filters
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(900, startAt);
+      filter.frequency.exponentialRampToValueAtTime(500, startAt + duration);
+      filter.Q.value = 1.1;
+
+      filter2.type = 'lowpass';
+      filter2.frequency.setValueAtTime(2200, startAt);
+      filter2.frequency.exponentialRampToValueAtTime(900, startAt + duration);
+
+      // Fast amplitude flutter (~28Hz) is what makes it sound "quacky" rather
+      // than like a smooth horn - this is the vocal-fold buzz
+      ampLfo.type = 'sine';
+      ampLfo.frequency.value = 28;
+      ampLfoGain.gain.value = 0.5;
+      ampLfo.connect(ampLfoGain);
+      ampLfoGain.connect(oscGain.gain);
+      oscGain.gain.value = 0.5;
+
+      // Overall envelope: sharp attack, short hold, quick decay
+      masterGain.gain.setValueAtTime(0.0001, startAt);
+      masterGain.gain.exponentialRampToValueAtTime(peakGain, startAt + 0.015);
+      masterGain.gain.exponentialRampToValueAtTime(peakGain * 0.6, startAt + duration * 0.55);
+      masterGain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+      osc.connect(oscGain);
+      sub.connect(oscGain);
+      oscGain.connect(filter);
+      filter.connect(filter2);
+      filter2.connect(masterGain);
+      masterGain.connect(ctx.destination);
+
+      osc.start(startAt);
+      sub.start(startAt);
+      ampLfo.start(startAt);
+      osc.stop(startAt + duration + 0.02);
+      sub.stop(startAt + duration + 0.02);
+      ampLfo.stop(startAt + duration + 0.02);
+    }
+
     const now = ctx.currentTime;
+    honk(now, 0.22, 0.5);
+    honk(now + 0.24, 0.16, 0.38);
 
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-
-    osc.type = 'sawtooth';
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1200, now);
-
-    // Quick downward pitch sweep is what makes it read as a "quack"
-    osc.frequency.setValueAtTime(620, now);
-    osc.frequency.exponentialRampToValueAtTime(180, now + 0.14);
-
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 0.18);
-    osc.onended = () => ctx.close();
+    setTimeout(() => ctx.close(), 600);
   }catch(e){
     // If the browser blocks audio (e.g. no user interaction yet), fail silently
   }
