@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Record Producer Request Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2926;
+    --paper:#F6F3EC;
+    --card:#FFFFFF;
+    --teal:#0E4B43;
+    --teal-light:#E4EDE9;
+    --accent:#C6672E;
+    --accent-light:#FBEADC;
+    --line:#D8D2C4;
+    --muted:#6B7570;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+    padding-bottom:120px;
+  }
+  header{
+    background:var(--teal);
+    color:#F6F3EC;
+    padding:36px 24px 30px;
+  }
+  .header-inner{
+    max-width:820px;
+    margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#9FC2B7;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:32px;
+    margin:0 0 10px;
+  }
+  header p{
+    margin:0;
+    color:#CFDEDA;
+    font-size:15px;
+    max-width:600px;
+  }
+  main{
+    max-width:820px;
+    margin:0 auto;
+    padding:28px 24px 0;
+  }
+  .helpbox{
+    background:var(--accent-light);
+    border:1px solid #EBC7A6;
+    border-radius:var(--radius);
+    padding:16px 18px;
+    font-size:14px;
+    color:#6B3E1B;
+    margin-bottom:28px;
+  }
+  .helpbox strong{color:#5A3115;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px 26px;
+    margin-bottom:24px;
+    box-shadow:0 1px 2px rgba(27,41,38,0.04);
+  }
+  .card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 6px;
+  }
+  .card-title .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    background:var(--teal);
+    color:#fff;
+    width:22px;height:22px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .card-title h2{
+    font-family:'Fraunces',serif;
+    font-size:19px;
+    font-weight:600;
+    margin:0;
+  }
+  .card-sub{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 20px 32px;
+  }
+  label{
+    display:block;
+    font-size:13.5px;
+    font-weight:600;
+    margin-bottom:6px;
+    color:var(--ink);
+  }
+  .hint{
+    font-weight:400;
+    color:var(--muted);
+    font-size:12.5px;
+    display:block;
+    margin-top:3px;
+  }
+  input[type=text], textarea, select{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:7px;
+    background:#FCFBF8;
+    color:var(--ink);
+    resize:vertical;
+  }
+  input[type=text]:focus, textarea:focus, select:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+    background:#fff;
+  }
+  .field{margin-bottom:18px;}
+  .field:last-child{margin-bottom:0;}
+  textarea{min-height:64px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media (max-width:600px){.row2{grid-template-columns:1fr;}}
+
+  #otherWrap{display:none;margin-top:12px;}
+
+  /* Variables */
+  #variableList{display:flex;flex-direction:column;gap:16px;}
+  .varblock{
+    border:1px solid var(--line);
+    border-left:4px solid var(--teal);
+    border-radius:8px;
+    padding:18px 18px 16px;
+    background:#FCFBF8;
+    position:relative;
+  }
+  .varblock-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .varblock-head .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .removeBtn{
+    background:none;
+    border:1px solid var(--line);
+    color:#A14A2A;
+    font-size:12px;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .removeBtn:hover{background:var(--accent-light);}
+  .mandatory-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:4px 0 18px;
+  }
+  .mandatory-row input{width:auto;}
+  .mandatory-row label{margin:0;font-weight:500;font-size:13.5px;}
+
+  .options-area{
+    margin-top:16px;
+    padding:12px 14px;
+    background:var(--teal-light);
+    border-radius:7px;
+  }
+  .options-area > label{margin-bottom:10px;}
+  .option-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:0 0 8px 18px;
+  }
+  .option-row .bullet{color:var(--teal);font-size:16px;}
+  .option-row input{background:#fff;}
+  .option-remove{
+    background:none;border:none;color:var(--muted);
+    cursor:pointer;font-size:16px;line-height:1;padding:4px;
+  }
+  .option-remove:hover{color:#A14A2A;}
+  .addOptionBtn{
+    margin-left:18px;
+    background:none;
+    border:1px dashed #9FBDB2;
+    color:var(--teal);
+    font-size:12.5px;
+    font-weight:600;
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .addOptionBtn:hover{background:#fff;}
+
+  #addVariableBtn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    padding:14px;
+    background:#fff;
+    border:2px dashed var(--teal);
+    color:var(--teal);
+    font-weight:700;
+    font-size:14.5px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:16px;
+  }
+  #addVariableBtn:hover{background:var(--teal-light);}
+
+  #emptyState{
+    text-align:center;
+    padding:26px 10px;
+    color:var(--muted);
+    font-size:14px;
+    border:1px dashed var(--line);
+    border-radius:8px;
+  }
+
+  /* Footer action bar */
+  .actionbar{
+    position:sticky;
+    bottom:0;
+    left:0;right:0;
+    background:linear-gradient(to top, var(--paper) 70%, transparent);
+    padding:24px 24px 26px;
+    margin-top:8px;
+  }
+  .actionbar-inner{
+    max-width:820px;
+    margin:0 auto;
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  #downloadBtn{
+    flex:1;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    font-size:16px;
+    font-weight:700;
+    padding:16px;
+    border-radius:9px;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(198,103,46,0.35);
+  }
+  #downloadBtn:hover{background:#B45A24;}
+  #clearBtn{
+    background:none;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:16px 18px;
+    border-radius:9px;
+    font-size:14px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  #clearBtn:hover{background:#EFEAE0;}
+  #statusMsg{
+    max-width:820px;
+    margin:0 auto;
+    padding:0 24px;
+    font-size:13px;
+    color:#A14A2A;
+    min-height:18px;
+  }
+
+  /* Summary output */
+  #summaryCard{display:none;}
+  #summaryText{
+    width:100%;
+    min-height:360px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    line-height:1.6;
+    white-space:pre;
+    background:#FCFBF8;
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:16px;
+    color:var(--ink);
+  }
+  .summary-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:14px;
+  }
+  #copyBtn{
+    background:var(--teal);
+    color:#fff;
+    border:none;
+    font-size:14px;
+    font-weight:700;
+    padding:11px 18px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  #copyBtn:hover{background:#0A3A33;}
+  #copyStatus{font-size:13px;color:var(--teal);font-weight:600;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">ServiceNow &middot; Record Producer Request</div>
+    <h1>Tell us what you need built</h1>
+    <p>Fill in the details below exactly as you'd like the form to work. When you're done, press "Download as PDF" at the bottom and send that file over — no need to explain it any other way.</p>
+  </div>
+</header>
+
+<main>
+  <div class="helpbox">
+    <strong>Not sure what something means?</strong> Just fill in as much as you can, in your own words. Every box has an example in grey text to guide you — you can leave anything blank if it doesn't apply.
+  </div>
+
+  <form id="requestForm" onsubmit="return false;">
+
+    <!-- SECTION 1 -->
+    <div class="card">
+      <div class="card-title"><span class="num">1</span><h2>The basics</h2></div>
+      <p class="card-sub">What is this form called, and what's it for?</p>
+
+      <div class="field">
+        <label for="formName">Form name</label>
+        <input type="text" id="formName" placeholder="e.g. New Starter Laptop Request">
+      </div>
+
+      <div class="field">
+        <label for="shortDesc">Short description
+          <span class="hint">One line — this often shows up as a title or teaser on the request page.</span>
+        </label>
+        <input type="text" id="shortDesc" placeholder="e.g. Request a laptop for a new starter">
+      </div>
+
+      <div class="field">
+        <label for="fullDesc">Description
+          <span class="hint">A longer explanation of what this form does and when someone should use it.</span>
+        </label>
+        <textarea id="fullDesc" placeholder="e.g. Use this form to request a laptop be ordered and configured for someone joining the team. IT will action within 5 working days."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="availableFor">Available for
+          <span class="hint">Who should be able to see and use this form?</span>
+        </label>
+        <select id="availableFor" onchange="toggleOther()">
+          <option value="">Choose one...</option>
+          <option value="Students">Students</option>
+          <option value="Staff">Staff</option>
+          <option value="All">All</option>
+          <option value="Other">Other</option>
+        </select>
+        <div id="otherWrap">
+          <label for="otherText">Please specify who</label>
+          <input type="text" id="otherText" placeholder="e.g. Contractors and volunteers only">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="card">
+      <div class="card-title"><span class="num">2</span><h2>Questions on the form</h2></div>
+      <p class="card-sub">These are the boxes someone fills in when they use the form. Add as many as you need.</p>
+
+      <div id="variableList"></div>
+      <div id="emptyState">No questions added yet — press the button below to add your first one.</div>
+
+      <button type="button" id="addVariableBtn" onclick="addVariable()">+ Add a question</button>
+    </div>
+
+  </form>
+
+  <div class="card" id="summaryCard">
+    <div class="card-title"><span class="num">3</span><h2>Your summary</h2></div>
+    <p class="card-sub">Copy everything in the box below and paste it into an email or chat message.</p>
+    <textarea id="summaryText" readonly></textarea>
+    <div class="summary-actions">
+      <button type="button" id="copyBtn" onclick="copySummary()">Copy to clipboard</button>
+      <span id="copyStatus"></span>
+    </div>
+  </div>
+</main>
+
+<div class="actionbar">
+  <div id="statusMsg"></div>
+  <div class="actionbar-inner">
+    <button type="button" id="clearBtn" onclick="clearForm()">Start over</button>
+    <button type="button" id="downloadBtn" onclick="generateSummary()">Generate summary</button>
+  </div>
+</div>
+
+<script>
+let varCount = 0;
+
+const VARIABLE_TYPES = [
+  {group:"Text & input", options:["Single Line Text","Multi Line Text","Wide Single Line Text","Masked (hidden text)","Email","Numeric Scale"]},
+  {group:"Choice", options:["Select Box (dropdown)","Choice List / Multiple Choice","Checkbox (Yes/No)","Lookup Select Box","List Collector"]},
+  {group:"Date & time", options:["Date","Date/Time","Duration"]},
+  {group:"Reference & special", options:["Reference","Requested For","CI Identifier","Attachment","Container Start","Container End","Label","Macro","Macro with Label","HTML","Break","UI Page"]}
+];
+
+function buildTypeOptions(selectEl){
+  let html = '<option value="">Choose a type...</option>';
+  VARIABLE_TYPES.forEach(g=>{
+    html += `<optgroup label="${g.group}">`;
+    g.options.forEach(o=> html += `<option value="${o}">${o}</option>`);
+    html += `</optgroup>`;
+  });
+  selectEl.innerHTML = html;
+}
+
+function toggleOther(){
+  const val = document.getElementById('availableFor').value;
+  document.getElementById('otherWrap').style.display = (val === 'Other') ? 'block' : 'none';
+}
+
+function addVariable(){
+  varCount++;
+  const id = varCount;
+  document.getElementById('emptyState').style.display = 'none';
+
+  const block = document.createElement('div');
+  block.className = 'varblock';
+  block.id = 'var-' + id;
+  block.innerHTML = `
+    <div class="varblock-head">
+      <span class="tag">Question ${document.querySelectorAll('.varblock').length + 1}</span>
+      <button type="button" class="removeBtn" onclick="removeVariable(${id})">Remove</button>
+    </div>
+
+    <div class="field">
+      <label>Variable type</label>
+      <select class="var-type" onchange="onTypeChange(${id})"></select>
+    </div>
+
+    <div class="field">
+      <label>Name of variable / question
+        <span class="hint">The exact wording someone will see, e.g. "What laptop model do you need?"</span>
+      </label>
+      <input type="text" class="var-name" placeholder="e.g. Which department is this for?">
+    </div>
+
+    <div class="mandatory-row">
+      <input type="checkbox" class="var-mandatory" id="mand-${id}">
+      <label for="mand-${id}">This question must be answered (mandatory)</label>
+    </div>
+
+    <div class="options-area">
+      <label>Options
+        <span class="hint">Only needed for dropdowns, tick-lists etc. Add each option someone can pick.</span>
+      </label>
+      <div class="option-list" id="optlist-${id}"></div>
+      <button type="button" class="addOptionBtn" onclick="addOption(${id})">+ Add option</button>
+    </div>
+
+    <div class="field" style="margin-top:16px;">
+      <label>What happens when this is used?
+        <span class="hint">e.g. "If Other is picked, show a text box" or "This sets the priority to High"</span>
+      </label>
+      <textarea class="var-behavior" placeholder="e.g. If someone selects 'Laptop', also show the 'Which laptop model' question. Leave blank if nothing special happens."></textarea>
+    </div>
+  `;
+  document.getElementById('variableList').appendChild(block);
+  buildTypeOptions(block.querySelector('.var-type'));
+  addOption(id); // start with one option row, user can remove it
+  renumberVariables();
+}
+
+function onTypeChange(id){
+  // purely visual affordance hook, kept simple - no forced hiding so nothing is ever blocked
+}
+
+function addOption(id){
+  const list = document.getElementById('optlist-' + id);
+  const row = document.createElement('div');
+  row.className = 'option-row';
+  row.innerHTML = `
+    <span class="bullet">–</span>
+    <input type="text" class="var-option" placeholder="e.g. Windows Laptop">
+    <button type="button" class="option-remove" onclick="this.parentElement.remove()">✕</button>
+  `;
+  list.appendChild(row);
+}
+
+function removeVariable(id){
+  const el = document.getElementById('var-' + id);
+  if(el) el.remove();
+  renumberVariables();
+  if(document.querySelectorAll('.varblock').length === 0){
+    document.getElementById('emptyState').style.display = 'block';
+  }
+}
+
+function renumberVariables(){
+  document.querySelectorAll('.varblock').forEach((b,i)=>{
+    b.querySelector('.tag').textContent = 'Question ' + (i+1);
+  });
+}
+
+function clearForm(){
+  if(!confirm("This will clear everything you've entered. Continue?")) return;
+  document.getElementById('formName').value = '';
+  document.getElementById('shortDesc').value = '';
+  document.getElementById('fullDesc').value = '';
+  document.getElementById('availableFor').value = '';
+  document.getElementById('otherText').value = '';
+  toggleOther();
+  document.getElementById('variableList').innerHTML = '';
+  document.getElementById('emptyState').style.display = 'block';
+  varCount = 0;
+  document.getElementById('statusMsg').textContent = '';
+  document.getElementById('summaryCard').style.display = 'none';
+  document.getElementById('summaryText').value = '';
+  document.getElementById('copyStatus').textContent = '';
+}
+
+function playQuack(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1200, now);
+
+    // Quick downward pitch sweep is what makes it read as a "quack"
+    osc.frequency.setValueAtTime(620, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.14);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.18);
+    osc.onended = () => ctx.close();
+  }catch(e){
+    // If the browser blocks audio (e.g. no user interaction yet), fail silently
+  }
+}
+
+function generateSummary(){
+  const statusEl = document.getElementById('statusMsg');
+  const formName = document.getElementById('formName').value.trim();
+
+  if(!formName){
+    statusEl.textContent = "Please fill in a Form name before generating a summary — it's used as the title.";
+    document.getElementById('formName').focus();
+    return;
+  }
+  statusEl.textContent = '';
+
+  const shortDesc = document.getElementById('shortDesc').value.trim();
+  const fullDesc = document.getElementById('fullDesc').value.trim();
+  const availableFor = document.getElementById('availableFor').value;
+  const otherText = document.getElementById('otherText').value.trim();
+  const availableForDisplay = (availableFor === 'Other' && otherText) ? `Other — ${otherText}` : (availableFor || '—');
+
+  const today = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+  const divider = '─'.repeat(50);
+
+  let lines = [];
+  lines.push('RECORD PRODUCER REQUEST');
+  lines.push(`Generated ${today}`);
+  lines.push(divider);
+  lines.push('');
+  lines.push(`FORM NAME: ${formName}`);
+  lines.push('');
+  lines.push(`SHORT DESCRIPTION: ${shortDesc || '—'}`);
+  lines.push('');
+  lines.push('DESCRIPTION:');
+  lines.push(fullDesc || '—');
+  lines.push('');
+  lines.push(`AVAILABLE FOR: ${availableForDisplay}`);
+  lines.push('');
+  lines.push(divider);
+
+  const blocks = document.querySelectorAll('.varblock');
+  lines.push(`QUESTIONS ON THE FORM (${blocks.length})`);
+  lines.push(divider);
+
+  if(blocks.length === 0){
+    lines.push('');
+    lines.push('No questions were added to this form.');
+  }
+
+  blocks.forEach((b, i)=>{
+    const type = b.querySelector('.var-type').value || 'Not specified';
+    const name = b.querySelector('.var-name').value.trim() || '(No name given)';
+    const mandatory = b.querySelector('.var-mandatory').checked;
+    const behavior = b.querySelector('.var-behavior').value.trim();
+    const options = Array.from(b.querySelectorAll('.var-option'))
+                          .map(o=>o.value.trim())
+                          .filter(v=>v.length>0);
+
+    lines.push('');
+    lines.push(`${i+1}. ${name}${mandatory ? '  [MANDATORY]' : ''}`);
+    lines.push(`   Type: ${type}`);
+
+    if(options.length > 0){
+      lines.push('   Options:');
+      options.forEach(o => lines.push(`     - ${o}`));
+    }
+
+    if(behavior){
+      lines.push(`   What happens: ${behavior}`);
+    }
+  });
+
+  lines.push('');
+  lines.push(divider);
+
+  document.getElementById('summaryText').value = lines.join('\n');
+  document.getElementById('summaryCard').style.display = 'block';
+  document.getElementById('copyStatus').textContent = '';
+  document.getElementById('summaryCard').scrollIntoView({behavior:'smooth', block:'start'});
+  playQuack();
+}
+
+function copySummary(){
+  const textEl = document.getElementById('summaryText');
+  textEl.select();
+  textEl.setSelectionRange(0, 999999);
+
+  const finish = (ok)=>{
+    const statusEl = document.getElementById('copyStatus');
+    statusEl.textContent = ok ? 'Copied!' : 'Could not copy — please select the text manually and copy it.';
+    if(ok) setTimeout(()=>{ statusEl.textContent=''; }, 2500);
+  };
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(textEl.value).then(()=>finish(true)).catch(()=>{
+      try{ finish(document.execCommand('copy')); }catch(e){ finish(false); }
+    });
+  } else {
+    try{ finish(document.execCommand('copy')); }catch(e){ finish(false); }
+  }
+}
+
+// Start with one blank question so the page doesn't look empty
+addVariable();
+</script>
+
+</body>
+</html>
